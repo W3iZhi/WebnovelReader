@@ -47,6 +47,8 @@ public class BookDetails extends AppCompatActivity {
         descriptionView.setText(getIntent().getStringExtra("description"));
         Picasso.get().load(getIntent().getStringExtra("image")).into(imageView);
 
+
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ChapterAdapter(chapterItems, this);

@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jsoup.Jsoup;
@@ -29,9 +31,12 @@ public class MainActivity extends AppCompatActivity {
     private BookAdapter adapter;
     private ArrayList<BookItem> bookItems = new ArrayList<>();
     private ProgressBar progressBar;
-    private EditText pageView;
+    private EditText pageView, searchBar;
+    private TextView maxPage;
     private Button previous, next;
+    private ImageButton advancedSearch, search;
     private static int currentPage;
+    private String searchWord;
     private int maxPages;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +46,15 @@ public class MainActivity extends AppCompatActivity {
 
         previous = findViewById(R.id.previousButton);
         next = findViewById(R.id.nextButton);
+        search = findViewById(R.id.search);
+        advancedSearch = findViewById(R.id.advancedSearch);
         pageView = findViewById(R.id.pageView);
+        searchBar = findViewById(R.id.searchBar);
         progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.recyclerView);
+        maxPage = findViewById(R.id.maxPage);
 
-
+        searchWord = "";
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new BookAdapter(bookItems, this);
@@ -55,20 +64,30 @@ public class MainActivity extends AppCompatActivity {
 
 
         loadBooks();
+
     }
     private void loadBooks() {
+        if (!bookItems.isEmpty()) {
+            bookItems.clear();
+        }
+        pageView.setText(Integer.toString(currentPage));
         Content content = new Content();
         content.execute();
+    }
+    public void search(View button) {
+        if (button == search) {
+            searchWord = searchBar.getText().toString();
+            loadBooks();
+        } else if (button == advancedSearch) {
+
+        }
     }
 
     public void navigate(View button) {
         if (button == previous) {
             if (currentPage != 1) {
                 currentPage--;
-                bookItems.clear();
-                pageView.setText(Integer.toString(currentPage));
                 Log.d("clicked", "previous");
-                Log.d("currentPage", Integer.toString(currentPage));
                 loadBooks();
             } else {
                 Toast.makeText(this, "This is the first page", Toast.LENGTH_LONG).show();
@@ -76,10 +95,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (button == next) {
             if (currentPage != maxPages) {
                 currentPage++;
-                bookItems.clear();
-                pageView.setText(Integer.toString(currentPage));
                 Log.d("clicked", "next");
-                Log.d("currentPage", Integer.toString(currentPage));
                 loadBooks();
             } else {
                 Toast.makeText(this, "This is the last page", Toast.LENGTH_LONG).show();
@@ -102,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(unused);
             progressBar.setVisibility(View.GONE);
             progressBar.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, android.R.anim.fade_out));
+            maxPage.setText("/" + maxPages);
             adapter.notifyDataSetChanged();
         }
 
@@ -116,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("scrapping", "executed");
                 String base = "https://www.royalroad.com/fictions/search?page=";
                 int page = currentPage;
-                String url = base + page + "&advanced=true";
+                String url = base + page + "&keyword=" + searchWord;
                 Document doc = Jsoup.connect(url)
                         .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
                                 " AppleWebKit/537.36(KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
@@ -126,7 +143,9 @@ public class MainActivity extends AppCompatActivity {
 
                 Elements data = doc.select("div.fiction-list-item");
                 String maxPageNum = doc.select("ul.pagination > *").eq(6).select("a").attr("data-page");
-                maxPages = Integer.parseInt(maxPageNum);
+                if (maxPages < Integer.parseInt(maxPageNum)) {
+                    maxPages = Integer.parseInt(maxPageNum);
+                }
                 Log.d("maxPages", "Number: " + maxPages);
                 int size = data.size();
                 for (int i = 0; i < size; i++) {
@@ -184,20 +203,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
 
-        }
-        public String pagesToWord(String pages) {
-            String pagesValues = pages.replaceAll("\\s.*", "").replace(",","");
-            String calculatedWords = Integer.toString(Integer.parseInt(pagesValues)*275);
-            StringBuilder temp = new StringBuilder(calculatedWords);
-            String reverseWords = (temp.reverse().toString()).replaceAll("...", "$0,");
-            temp = new StringBuilder(reverseWords);
-            String wordCount = temp.toString();
-            char first = wordCount.charAt(0);
-            boolean test = first == ',';
-            if(test) {
-
-            }
-            return "~" +  temp.reverse().toString() + " words";
         }
     }
 }

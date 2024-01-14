@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jsoup.select.Elements;
@@ -48,17 +49,24 @@ public class ParagraphAdapter extends RecyclerView.Adapter<ParagraphAdapter.View
         ParagraphItem paragraphItem = paragraphItems.get(position);
         Context tableContext = holder.tableView.getContext();
         TableRow.LayoutParams params = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
+        holder.transitionChapter.setVisibility(View.GONE);
+        holder.tableView.setVisibility(View.GONE);
 
-        if(paragraphItem.isTable()) {
+        if(paragraphItem.isTransition()) {
+            holder.transitionChapter.setVisibility(View.VISIBLE);
+            holder.paragraphView.setVisibility(View.GONE);
+            holder.transitionChapter.setText(paragraphItem.getParagraph());
+        } else if(paragraphItem.isTable()) {
             holder.tableView.setVisibility(View.VISIBLE);
             holder.paragraphView.setVisibility(View.GONE);
             Elements tableData = paragraphItem.getTableData();
+            Log.d("tableData", tableData.text());
             int tableRows = tableData.size();
             for (int i = 0; i < tableRows; i++){
                 Elements tableRow = tableData.eq(i).select("td");
+                Log.d("tableRow", tableRow.text());
                 int tableCols = tableRow.size();
                 TableRow tr_head = new TableRow(tableContext);
-
                 TextView rows = new TextView(tableContext);
                 rows.setTextColor(Color.WHITE);
                 rows.setLayoutParams(params);
@@ -66,7 +74,8 @@ public class ParagraphAdapter extends RecyclerView.Adapter<ParagraphAdapter.View
                 if (tableCols == 1) {
                     String text = "";
                     for(int p = 0; p < tableRow.select("p").size(); p++) {
-                        text = text + "\n" + tableRow.select("p").eq(p).text() + "\n";
+                            text = text + "\n" + tableRow.select("p").eq(p).text() + "\n";
+                        Log.d("tr text", tableRow.select("p").eq(p).text());
                     }
                     rows.setText(text);
                     tr_head.addView(rows);
@@ -82,6 +91,7 @@ public class ParagraphAdapter extends RecyclerView.Adapter<ParagraphAdapter.View
                         cols.setTextColor(Color.WHITE);
                         cols.setGravity(Gravity.CENTER);
                         cols.setText(tableRow.select("p").eq(j).text());
+                        Log.d("td text", tableRow.select("p").eq(j).text());
                         td.addView(cols);
                         tr_head.addView(td);
                     }
@@ -92,8 +102,9 @@ public class ParagraphAdapter extends RecyclerView.Adapter<ParagraphAdapter.View
         } else {
             holder.paragraphView.setText(paragraphItem.getParagraph());
         }
-        if (position ==(getItemCount()-1)) {
-            Toast.makeText(holder.itemView.getContext(), "last_item", Toast.LENGTH_LONG).show();
+        if (position == (getItemCount()-1)) {
+            ((BookReader)context).transitionChapter();
+            ((BookReader)context).loadnextChapter();
         }
     }
 
@@ -104,15 +115,17 @@ public class ParagraphAdapter extends RecyclerView.Adapter<ParagraphAdapter.View
     public void colTheme (TextView textView) {
 
     }
+
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView paragraphView;
+        TextView paragraphView, transitionChapter;
         TableLayout tableView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             paragraphView = itemView.findViewById(R.id.paragraphView);
             tableView = itemView.findViewById(R.id.tableView);
-
+            transitionChapter = itemView.findViewById(R.id.transitionChapter);
 
 
         }

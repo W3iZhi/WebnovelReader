@@ -11,6 +11,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
+            android:layout_margin="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="0.06">
+            <ImageButton
+                android:onClick="search"
+                android:id="@+id/advancedSearch"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/advanced_search"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1"/>
+            <EditText
+                android:singleLine="true"
+                android:hint="Search..."
+                android:id="@+id/searchBar"
+                android:imeOptions="actionDone"
+                android:background="@color/white"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"/>
+            <ImageButton
+                android:onClick="search"
+                android:id="@+id/search"
+                android:layout_marginLeft="8dp"
+                android:src="@drawable/search"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1"/>
+        </LinearLayout>
+        <LinearLayout
             android:id="@+id/topLayout"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
@@ -43,11 +75,15 @@
                 android:inputType="number"
                 android:id="@+id/pageView"
                 android:gravity="center"
-                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="CurrentPage"/>
-
+            <TextView
+                android:id="@+id/maxPage"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                />
             <Button
                 android:onClick="navigate"
                 android:id="@+id/nextButton"

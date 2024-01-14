@@ -23,7 +23,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class BookReader extends AppCompatActivity implements OnClickListener {
+public class BookReader extends AppCompatActivity implements OnClickListener, ParagraphListener {
     private RecyclerView recyclerView;
     private ParagraphAdapter adapter;
     private ArrayList<ChapterItem> chapterItems;
@@ -33,6 +33,7 @@ public class BookReader extends AppCompatActivity implements OnClickListener {
     private TextView chapterName;
     private LinearLayout readerTop, readerBot;
     private Button previous, next;
+    private ParagraphItem transitionText;
     int selectedChapter;
     int maxChapters;
     @Override
@@ -40,6 +41,7 @@ public class BookReader extends AppCompatActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_reader);
 
+        transitionText = new ParagraphItem("", false);
         selectedChapter = getIntent().getIntExtra("selectedChapter", 1);
         chapterItems = getIntent().getParcelableArrayListExtra("chapterList");
         progressBar = findViewById(R.id.progressBar);
@@ -51,13 +53,13 @@ public class BookReader extends AppCompatActivity implements OnClickListener {
         next = findViewById(R.id.nextChapter);
         maxChapters = chapterItems.size();
 
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ParagraphAdapter(paragraphItems, this);
         recyclerView.setAdapter(adapter);
 
         loadChapter();
-        chapterName.setText(chapterItems.get(selectedChapter).getChapterName());
     }
 
     private void loadChapter() {
@@ -93,13 +95,34 @@ public class BookReader extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onClick() {
-        if(readerTop.getVisibility() == View.VISIBLE) {
-            readerTop.setVisibility(View.GONE);
+        if(readerTop.getVisibility() == View.VISIBLE || readerBot.getVisibility() == View.VISIBLE) {
+            //readerTop.setVisibility(View.GONE);
             readerBot.setVisibility(View.GONE);
         } else {
+            chapterName.setText(chapterItems.get(selectedChapter).getChapterName());
+            /* Needs to rework to show current chapter rather than latest chapter loaded
             readerTop.setVisibility(View.VISIBLE);
+             */
             readerBot.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void loadnextChapter() {
+        if (selectedChapter != maxChapters - 1) {
+            selectedChapter++;
+            Content content = new Content();
+            content.execute();
+        }
+    }
+
+    @Override
+    public void transitionChapter() {
+        String currentChapter = chapterItems.get(selectedChapter).getChapterName();
+        String nextChapter = selectedChapter != maxChapters -1 ? chapterItems.get(selectedChapter + 1).getChapterName() : "NIL";
+        String transition = "Previous Chapter: " + currentChapter + "\n\n" + "Next Chapter: " + nextChapter;
+        transitionText.setParagraph(transition);
+        transitionText.setTransition(true);
     }
 
     private class Content extends AsyncTask<Void, Void, Void> {
@@ -108,7 +131,6 @@ public class BookReader extends AppCompatActivity implements OnClickListener {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
             progressBar.startAnimation(AnimationUtils.loadAnimation(BookReader.this, android.R.anim.fade_in));
-            adapter.notifyDataSetChanged();
         }
 
         @Override
@@ -127,6 +149,9 @@ public class BookReader extends AppCompatActivity implements OnClickListener {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
+                if (transitionText.isTransition()) {
+                    paragraphItems.add(transitionText);
+                }
                 currentChapter = chapterItems.get(selectedChapter);
                 String baseUrl = "https://www.royalroad.com";
                 //String chapterUrl = getIntent().getStringExtra("chapterUrl");
@@ -161,9 +186,9 @@ public class BookReader extends AppCompatActivity implements OnClickListener {
                         paragraph = currentParagraph.text();
                     }
                     if (isTable) {
-                        paragraphItems.add(new ParagraphItem(paragraph, isTable, tableData));
+                        paragraphItems.add(new ParagraphItem(paragraph, isTable, tableData, false));
                     } else {
-                        paragraphItems.add(new ParagraphItem(paragraph, isTable));
+                        paragraphItems.add(new ParagraphItem(paragraph, isTable, false));
                     }
                     Log.d("paragraphs", "paragraph: " + paragraph + " , isTable: " + isTable);
                 }

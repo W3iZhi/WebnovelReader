@@ -22,4 +22,17 @@
         android:layout_marginRight="12dp"
         android:gravity="center">
     </TableLayout>
+    <TextView
+        android:visibility="gone"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="test"
+        android:id="@+id/transitionChapter"
+        android:textSize="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:textColor="@color/white"
+        android:textStyle="italic|bold"
+        android:gravity="center"/>
 </LinearLayout>
