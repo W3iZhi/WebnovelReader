@@ -1,4 +1,4 @@
-package com.example.webnovelreader;
+package com.example.webnovelreader.BookReader;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.webnovelreader.BookDetails.ChapterItem;
+import com.example.webnovelreader.OnClickListener;
+import com.example.webnovelreader.R;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -76,6 +80,7 @@ public class BookReader extends AppCompatActivity implements OnClickListener, Pa
                 Log.d("clicked", "previous");
                 Log.d("currentPage", Integer.toString(selectedChapter));
                 loadChapter();
+                recyclerView.scrollToPosition(0);
             } else {
                 Toast.makeText(this, "This are no earlier chapters", Toast.LENGTH_LONG).show();
             }
@@ -87,6 +92,7 @@ public class BookReader extends AppCompatActivity implements OnClickListener, Pa
                 Log.d("clicked", "previous");
                 Log.d("currentPage", Integer.toString(selectedChapter));
                 loadChapter();
+                recyclerView.scrollToPosition(0);
             } else {
                 Toast.makeText(this, "There are no more new chapters", Toast.LENGTH_LONG).show();
             }

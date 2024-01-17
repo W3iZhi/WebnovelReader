@@ -1,4 +1,4 @@
-package com.example.webnovelreader;
+package com.example.webnovelreader.BookReader;
 
 import org.jsoup.select.Elements;
 

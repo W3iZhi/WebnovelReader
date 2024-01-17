@@ -15,10 +15,10 @@
         android:theme="@style/Theme.TrialApp"
         tools:targetApi="31">
         <activity
-            android:name=".BookReader"
+            android:name=".BookReader.BookReader"
             android:exported="false" />
         <activity
-            android:name=".BookDetails"
+            android:name=".BookDetails.BookDetails"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

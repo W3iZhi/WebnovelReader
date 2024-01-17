@@ -1,4 +1,4 @@
-package com.example.webnovelreader;
+package com.example.webnovelreader.BookDetails;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,4 @@
-package com.example.webnovelreader;
+package com.example.webnovelreader.BookDetails;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.webnovelreader.R;
 import com.squareup.picasso.Picasso;
 
 import org.jsoup.Jsoup;

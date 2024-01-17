@@ -100,7 +100,6 @@
     </LinearLayout>
 
 
-
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="50dp"

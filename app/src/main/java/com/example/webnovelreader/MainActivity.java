@@ -11,10 +11,17 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.webnovelreader.Filter.FilterExpandableListAdapter;
+import com.example.webnovelreader.Filter.FilterGroupItem;
+import com.example.webnovelreader.Filter.GenerateFilterOptions;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,6 +31,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,16 +41,22 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private EditText pageView, searchBar;
     private TextView maxPage;
-    private Button previous, next;
+    private Button previous, next, reset, filter;
     private ImageButton advancedSearch, search;
     private static int currentPage;
     private String searchWord;
     private int maxPages;
+    private BottomSheetDialog filterDialog;
+    private HashMap<String, ArrayList<FilterGroupItem>> filterChoices;
+    private ArrayList<String> filterCategories;
+    private ExpandableListView filterOptions;
+    private ExpandableListAdapter filterOptionsAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         currentPage = 1;
+
 
         previous = findViewById(R.id.previousButton);
         next = findViewById(R.id.nextButton);
@@ -53,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.recyclerView);
         maxPage = findViewById(R.id.maxPage);
+
 
         searchWord = "";
         recyclerView.setHasFixedSize(true);
@@ -65,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
         loadBooks();
 
+        filterDialog = new BottomSheetDialog(this);
+        createDialog();
     }
     private void loadBooks() {
         if (!bookItems.isEmpty()) {
@@ -79,10 +96,40 @@ public class MainActivity extends AppCompatActivity {
             searchWord = searchBar.getText().toString();
             loadBooks();
         } else if (button == advancedSearch) {
-
+            filterDialog.show();
         }
     }
+    private void createDialog() {
 
+        Log.d("Dialog", "created");
+        View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null, false);
+        filterDialog.setContentView(dialogView);
+        reset = filterDialog.findViewById(R.id.reset);
+        filter = filterDialog.findViewById(R.id.filter);
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Dialog", "reset");
+                createDialog();
+            }
+        });
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Dialog", "filter");
+            }
+        });
+        filterOptions = filterDialog.findViewById(R.id.filterOptions);
+        setupFilter();
+    }
+    private void setupFilter() {
+        filterChoices = GenerateFilterOptions.generateFilterOptions("royalroad");
+        filterCategories = new ArrayList<String>(filterChoices.keySet());
+        Log.d("Filter Choices", filterChoices.get(filterCategories.get(0)).get(0).getFilterChoice());
+        filterOptionsAdapter = new FilterExpandableListAdapter(this, filterCategories, filterChoices);
+        filterOptions.setAdapter(filterOptionsAdapter);
+
+    }
     public void navigate(View button) {
         if (button == previous) {
             if (currentPage != 1) {
@@ -102,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private class Content extends AsyncTask<Void, Void, Void> {
         @Override
