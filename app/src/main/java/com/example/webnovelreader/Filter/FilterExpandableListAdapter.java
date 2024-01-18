@@ -1,11 +1,13 @@
 package com.example.webnovelreader.Filter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.content.Context;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.webnovelreader.R;
@@ -79,20 +81,29 @@ public class FilterExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = layoutInflater.inflate(R.layout.filter_item, null);
         }
         MaterialCheckBox filterItem = (MaterialCheckBox) convertView.findViewById(R.id.filterItem);
-//        filterItem.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int state = filterItem.getCheckedState();
-//                switch (state) {
-//                    case MaterialCheckBox.STATE_CHECKED:
-//                        filterItem.CheckedState(MaterialCheckBox.STATE_INDETERMINATE);
-//                    case MaterialCheckBox.STATE_INDETERMINATE:
-//                        filterItem.CheckedState(MaterialCheckBox.STATE_UNCHECKED);
-//                    case MaterialCheckBox.STATE_UNCHECKED:
-//                        filterItem.setCheckedState(MaterialCheckBox.STATE_CHECKED);
-//                }
-//            }
-//        });
+        filterItem.setOnClickListener(new View.OnClickListener() {
+            int state = filterItem.getCheckedState();
+            @Override
+            public void onClick(View v) {
+
+                if (state == MaterialCheckBox.STATE_CHECKED) {
+                    Log.d("Checkbox", "Checked");
+                    filterItem.setCheckedState(MaterialCheckBox.STATE_INDETERMINATE);
+                    Log.d("Checkbox", "Set Indeterminate");
+                    state = MaterialCheckBox.STATE_INDETERMINATE;
+                } else if (state == MaterialCheckBox.STATE_UNCHECKED) {
+                    Log.d("Checkbox", "Unchecked");
+                    filterItem.setCheckedState(MaterialCheckBox.STATE_CHECKED);
+                    Log.d("Checkbox", "Set Checked");
+                    state =MaterialCheckBox.STATE_CHECKED;
+                } else if (state == MaterialCheckBox.STATE_INDETERMINATE) {
+                    Log.d("Checkbox", "Indeterminate");
+                    filterItem.setCheckedState(MaterialCheckBox.STATE_UNCHECKED);
+                    Log.d("Checkbox", "Set Unchecked");
+                    state = MaterialCheckBox.STATE_UNCHECKED;
+                }
+            }
+        });
         filterItem.setText(filterItemObject.getFilterChoice());
         return convertView;
     }
