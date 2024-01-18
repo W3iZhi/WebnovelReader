@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private Button previous, next, reset, filter;
     private ImageButton advancedSearch, search;
     private static int currentPage;
-    private String searchWord;
+    private String searchWord, filterUrl;
     private int maxPages;
     private BottomSheetDialog filterDialog;
     private HashMap<String, ArrayList<FilterGroupItem>> filterChoices;
@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         searchWord = "";
+        filterUrl = "";
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new BookAdapter(bookItems, this);
@@ -117,10 +119,37 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("Dialog", "filter");
+                setFilter();
+                filterDialog.dismiss();
             }
         });
         filterOptions = filterDialog.findViewById(R.id.filterOptions);
         setupFilter();
+    }
+    private void setFilter() {
+        int categoriesNum = filterCategories.size();
+        Log.d("Filter Categories", Integer.toString(categoriesNum));
+        for (int i = 0; i < categoriesNum; i++) {
+            ArrayList<FilterGroupItem> filterChoiceList = filterChoices.get(filterCategories.get(i));
+            for (int j = 0; j < filterChoiceList.size(); j++) {
+                FilterGroupItem choice = filterChoiceList.get(j);
+                switch (choice.getCheckState()) {
+                    default:
+                    case 0:
+                        //unchecked
+                        break;
+                    case 1:
+                        //checked
+                        filterUrl = filterUrl + "&tagsAdd=" + choice.getFilterUrl();
+                        break;
+                    case 2:
+                        //removed
+                        filterUrl = filterUrl + "&tagsRemove=" + choice.getFilterUrl();
+                        break;
+                }
+            }
+        }
+        Log.d("Filter Url", filterUrl);
     }
     private void setupFilter() {
         filterChoices = GenerateFilterOptions.generateFilterOptions("royalroad");

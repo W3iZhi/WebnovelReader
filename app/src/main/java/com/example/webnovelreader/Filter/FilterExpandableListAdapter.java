@@ -91,16 +91,22 @@ public class FilterExpandableListAdapter extends BaseExpandableListAdapter {
                     filterItem.setCheckedState(MaterialCheckBox.STATE_INDETERMINATE);
                     Log.d("Checkbox", "Set Indeterminate");
                     state = MaterialCheckBox.STATE_INDETERMINATE;
+                    filterItemObject.setCheckState(state);
+                    Log.d("FilterItemObject", "Filter Choice " + filterItemObject.getFilterChoice() + " State: " + filterItemObject.getCheckState());
                 } else if (state == MaterialCheckBox.STATE_UNCHECKED) {
                     Log.d("Checkbox", "Unchecked");
                     filterItem.setCheckedState(MaterialCheckBox.STATE_CHECKED);
                     Log.d("Checkbox", "Set Checked");
                     state =MaterialCheckBox.STATE_CHECKED;
+                    filterItemObject.setCheckState(state);
+                    Log.d("FilterItemObject", "Filter Choice: " + filterItemObject.getFilterChoice() + " State: " + filterItemObject.getCheckState());
                 } else if (state == MaterialCheckBox.STATE_INDETERMINATE) {
                     Log.d("Checkbox", "Indeterminate");
                     filterItem.setCheckedState(MaterialCheckBox.STATE_UNCHECKED);
                     Log.d("Checkbox", "Set Unchecked");
                     state = MaterialCheckBox.STATE_UNCHECKED;
+                    filterItemObject.setCheckState(state);
+                    Log.d("FilterItemObject", "Filter Choice " + filterItemObject.getFilterChoice() + " State: " + filterItemObject.getCheckState());
                 }
             }
         });
