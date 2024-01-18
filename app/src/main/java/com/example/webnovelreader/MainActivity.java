@@ -1,13 +1,17 @@
 package com.example.webnovelreader;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +25,7 @@ import android.widget.Toast;
 import com.example.webnovelreader.Filter.FilterExpandableListAdapter;
 import com.example.webnovelreader.Filter.FilterGroupItem;
 import com.example.webnovelreader.Filter.GenerateFilterOptions;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.jsoup.Jsoup;
@@ -106,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Dialog", "created");
         View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null, false);
         filterDialog.setContentView(dialogView);
+        BottomSheetBehavior dialogBehavior = filterDialog.getBehavior();
+        dialogBehavior.setDraggable(false);
         reset = filterDialog.findViewById(R.id.reset);
         filter = filterDialog.findViewById(R.id.filter);
         reset.setOnClickListener(new View.OnClickListener() {
