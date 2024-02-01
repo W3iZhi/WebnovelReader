@@ -267,8 +267,14 @@ public class MainActivity extends AppCompatActivity {
                             .eq(i).select("span").eq(4).text();
                     String rating = data.select("div.col-sm-10 > div.row")
                             .eq(i).select("span").eq(1).attr("title") + " Stars";
-
-                    bookItems.add(new BookItem(imgUrl, title, description, bookUrl, followers, views, words, chapters, rating));
+                    Elements tagList = data.select("div.col-sm-10 > div.margin-bottom-10")
+                            .eq(i).select("span.tags > a");
+                    Log.d("Tags", "Num: " + tagList.size());
+                    ArrayList<String> tags = new ArrayList<>();
+                    for (Element tag : tagList) {
+                        tags.add(tag.text());
+                    }
+                    bookItems.add(new BookItem(imgUrl, title, description, bookUrl, followers, views, words, chapters, rating, tags));
                     Log.d("items"
                             , "img: " + imgUrl
                             + " , title: " + title

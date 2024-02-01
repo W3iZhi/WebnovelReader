@@ -49,5 +49,6 @@ dependencies {
     implementation ("com.squareup.picasso:picasso:2.8")
     implementation ("org.jsoup:jsoup:1.17.2")
     implementation ("androidx.compose.material3:material3:1.1.2")
+    implementation ("com.google.android.flexbox:flexbox:3.0.0")
 
 }

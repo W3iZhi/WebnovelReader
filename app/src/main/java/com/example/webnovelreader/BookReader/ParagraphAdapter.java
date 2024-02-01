@@ -79,11 +79,11 @@ public class ParagraphAdapter extends RecyclerView.Adapter<ParagraphAdapter.View
                     }
                     rows.setText(text);
                     tr_head.addView(rows);
-                    tr_head.setBackgroundResource(R.drawable.border);
+                    tr_head.setBackgroundResource(R.drawable.blue_border);
                 } else {
                     for (int j = 0; j < tableCols; j++){
                         TableRow td = new TableRow(tableContext);
-                        td.setBackgroundResource(R.drawable.border);
+                        td.setBackgroundResource(R.drawable.blue_border);
                         td.setLayoutParams(params);
                         TextView cols = new TextView(tableContext);
                         cols.setLayoutParams(params);

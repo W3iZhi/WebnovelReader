@@ -1,6 +1,14 @@
 package com.example.webnovelreader;
 
-public class BookItem {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
+
+public class BookItem implements Parcelable {
+    private ArrayList<String> tags;
     private String imgUrl;
     private String title;
     private String description;
@@ -14,7 +22,9 @@ public class BookItem {
 
     }
 
-    public BookItem(String imgUrl, String title, String description, String bookUrl, String followers, String views, String words, String chapters, String rating) {
+    public BookItem(String imgUrl, String title, String description, String bookUrl,
+                    String followers, String views, String words, String chapters,
+                    String rating, ArrayList<String> tags) {
         this.imgUrl = imgUrl;
         this.title = title;
         this.description = description;
@@ -24,6 +34,40 @@ public class BookItem {
         this.words = words;
         this.chapters = chapters;
         this.rating = rating;
+        this.tags = tags;
+    }
+
+    protected BookItem(Parcel in) {
+        tags = in.createStringArrayList();
+        imgUrl = in.readString();
+        title = in.readString();
+        description = in.readString();
+        bookUrl = in.readString();
+        followers = in.readString();
+        views = in.readString();
+        words = in.readString();
+        chapters = in.readString();
+        rating = in.readString();
+    }
+
+    public static final Creator<BookItem> CREATOR = new Creator<BookItem>() {
+        @Override
+        public BookItem createFromParcel(Parcel in) {
+            return new BookItem(in);
+        }
+
+        @Override
+        public BookItem[] newArray(int size) {
+            return new BookItem[size];
+        }
+    };
+
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<String> tags) {
+        this.tags = tags;
     }
 
     public String getImgUrl() {
@@ -96,5 +140,24 @@ public class BookItem {
 
     public void setRating(String rating) {
         this.rating = rating;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeStringList(tags);
+        dest.writeString(imgUrl);
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeString(bookUrl);
+        dest.writeString(followers);
+        dest.writeString(views);
+        dest.writeString(words);
+        dest.writeString(chapters);
+        dest.writeString(rating);
     }
 }
