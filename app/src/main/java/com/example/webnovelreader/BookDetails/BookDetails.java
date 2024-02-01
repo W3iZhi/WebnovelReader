@@ -59,7 +59,6 @@ public class BookDetails extends AppCompatActivity {
         content.execute();
 
     }
-
     private class Content extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
