@@ -1,6 +1,7 @@
 package com.example.webnovelreader;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -112,7 +114,9 @@ public class MainActivity extends AppCompatActivity {
         View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null, false);
         filterDialog.setContentView(dialogView);
         BottomSheetBehavior dialogBehavior = filterDialog.getBehavior();
+        dialogBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         dialogBehavior.setDraggable(false);
+
         reset = filterDialog.findViewById(R.id.reset);
         filter = filterDialog.findViewById(R.id.filter);
         reset.setOnClickListener(new View.OnClickListener() {

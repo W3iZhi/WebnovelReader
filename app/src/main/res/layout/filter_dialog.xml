@@ -33,10 +33,15 @@
         android:gravity="center"
         android:textColor="@color/white"
         android:text="Filter Options"/>
-    <ExpandableListView
-        android:groupIndicator="@drawable/custom_expandable"
-        android:id="@+id/filterOptions"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </ExpandableListView>
+        <ExpandableListView
+            android:groupIndicator="@drawable/custom_expandable"
+            android:id="@+id/filterOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </ExpandableListView>
+    </LinearLayout>
+
 </LinearLayout>
