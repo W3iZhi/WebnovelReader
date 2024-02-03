@@ -2,12 +2,14 @@ package com.example.webnovelreader;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.webnovelreader.BookDetails.BookDetails;
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -67,6 +70,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         ImageView imageView;
         TextView titleView, descriptionView, chaptersView, wordsView, followersView,viewsView,ratingsView;
         ScrollView scrollView;
+        MaterialCheckBox bookCheckBox;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -80,6 +84,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             followersView = itemView.findViewById(R.id.followersView);
             viewsView = itemView.findViewById(R.id.viewsView);
             ratingsView = itemView.findViewById(R.id.ratingsView);
+            bookCheckBox = itemView.findViewById(R.id.bookCheckbox);
 
             descriptionView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -91,6 +96,19 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             descriptionView.setMovementMethod(new ScrollingMovementMethod());
 
             itemView.setOnClickListener(this);
+            bookCheckBox.setOnClickListener(new View.OnClickListener() {
+                int state = bookCheckBox.getCheckedState();
+                @Override
+                public void onClick(View v) {
+                    if (state == 0) {
+                        Log.d("Book Checkbox", "Add to library");
+                        state = 1;
+                    } else {
+                        Log.d("Book Checkbox", "Remove from library");
+                        state = 0;
+                    }
+                }
+            });
         }
 
         @Override
