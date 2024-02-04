@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.webnovelreader.BookDetails.BookDetails;
+import com.example.webnovelreader.BookLibrary.LibraryBooks;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.squareup.picasso.Picasso;
 
@@ -58,6 +59,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             imageUrl = bookItem.getImgUrl();
         }
         Picasso.get().load(imageUrl).into(holder.imageView);
+
     }
 
     @Override
@@ -96,13 +98,18 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             descriptionView.setMovementMethod(new ScrollingMovementMethod());
 
             itemView.setOnClickListener(this);
+            LibraryBooks libraryBooks = new LibraryBooks(context.getApplicationContext());
             bookCheckBox.setOnClickListener(new View.OnClickListener() {
+
                 int state = bookCheckBox.getCheckedState();
                 @Override
                 public void onClick(View v) {
+                    int position = getBindingAdapterPosition();
                     if (state == 0) {
                         Log.d("Book Checkbox", "Add to library");
+                        Log.d("Book Checkbox", "Current position: " + position);
                         state = 1;
+                        libraryBooks.addNewBook(bookItems.get(position));
                     } else {
                         Log.d("Book Checkbox", "Remove from library");
                         state = 0;

@@ -217,7 +217,7 @@ public class BookSelect extends AppCompatActivity {
                     Log.d("scrapping", "executed");
                     String base = "https://www.royalroad.com/fictions/search?page=";
                     int page = currentPage;
-                    String url = base + page + "&keyword=" + searchWord;
+                    String url = base + page + "&keyword=" + searchWord + filterUrl;
                     Document doc = Jsoup.connect(url)
                             .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
                                     " AppleWebKit/537.36(KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
