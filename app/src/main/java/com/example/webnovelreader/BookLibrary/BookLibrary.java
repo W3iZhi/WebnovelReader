@@ -41,7 +41,6 @@ public class BookLibrary extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
 
         recyclerView.setHasFixedSize(true);
-        //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         adapter = new LibraryAdapter(bookItems, getActivity());
         recyclerView.setAdapter(adapter);

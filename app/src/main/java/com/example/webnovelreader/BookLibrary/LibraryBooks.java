@@ -72,7 +72,7 @@ public class LibraryBooks extends SQLiteOpenHelper {
         } else {
             imageUrl = bookItem.getImgUrl();
         }
-        String imageName = bookItem.getTitle().replaceAll("\\s", "_") + ".png";
+        String imageName = bookItem.getTitle().replaceAll("\\s", "_").replaceAll("/", "\\") + ".png";
         Picasso.get().load(imageUrl).into(PicassoDownload.picassoImageTarget(context, "bookImages", imageName));
 
         ContentValues values = new ContentValues();
