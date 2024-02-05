@@ -26,8 +26,9 @@ public class HomePage extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.flFragment, search)
+                .replace(R.id.flFragment, library)
                 .commit();
+//        bottomNavigationView.setSelectedItemId(R.id.search);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -51,7 +52,6 @@ public class HomePage extends AppCompatActivity {
         Intent intent = new Intent(this, BookSelect.class);
         if(source.getId() == R.id.royalroadSource) {
             intent.putExtra("source", "royalroad");
-
         }
         startActivity(intent);
     }

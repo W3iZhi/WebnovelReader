@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -22,12 +23,14 @@ import com.example.webnovelreader.BookLibrary.LibraryBooks;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     private ArrayList<BookItem> bookItems;
     private Context context;
+    private LibraryBooks libraryBooks;
 
     public BookAdapter(ArrayList<BookItem> bookItems, Context context) {
         this.bookItems = bookItems;
@@ -43,7 +46,12 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull BookAdapter.ViewHolder holder, int position) {
+        context = holder.itemView.getContext();
         BookItem bookItem = bookItems.get(position);
+        if (libraryBooks.containsBook(bookItem)) {
+            holder.bookCheckBox.setChecked(true);
+            Log.d("Library", "Contains: " + bookItem.getTitle());
+        }
         holder.titleView.setText(bookItem.getTitle());
         holder.descriptionView.setText(bookItem.getDescription());
         holder.chaptersView.setText(bookItem.getChapters());
@@ -98,21 +106,18 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             descriptionView.setMovementMethod(new ScrollingMovementMethod());
 
             itemView.setOnClickListener(this);
-            LibraryBooks libraryBooks = new LibraryBooks(context.getApplicationContext());
-            bookCheckBox.setOnClickListener(new View.OnClickListener() {
+            libraryBooks = new LibraryBooks(context);
 
-                int state = bookCheckBox.getCheckedState();
+            bookCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onClick(View v) {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     int position = getBindingAdapterPosition();
-                    if (state == 0) {
+                    if(bookCheckBox.isChecked()) {
                         Log.d("Book Checkbox", "Add to library");
-                        Log.d("Book Checkbox", "Current position: " + position);
-                        state = 1;
                         libraryBooks.addNewBook(bookItems.get(position));
                     } else {
                         Log.d("Book Checkbox", "Remove from library");
-                        state = 0;
+                        libraryBooks.removeBook(bookItems.get(position));
                     }
                 }
             });
@@ -129,5 +134,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
             context.startActivity(intent);
         }
+
     }
 }

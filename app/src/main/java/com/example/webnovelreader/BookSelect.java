@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.webnovelreader.DataScraping.GetBooks;
 import com.example.webnovelreader.Filter.FilterExpandableListAdapter;
 import com.example.webnovelreader.Filter.FilterGroupItem;
+import com.example.webnovelreader.Filter.FilterManager;
 import com.example.webnovelreader.Filter.GenerateFilterOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -112,6 +113,9 @@ public class BookSelect extends AppCompatActivity {
         BottomSheetBehavior dialogBehavior = filterDialog.getBehavior();
         dialogBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         dialogBehavior.setDraggable(false);
+        filterOptions = filterDialog.findViewById(R.id.filterOptions);
+
+        FilterManager.setupFilter(this, filterCategories, filterChoices, filterOptionsAdapter, filterOptions);
 
         reset = filterDialog.findViewById(R.id.reset);
         filter = filterDialog.findViewById(R.id.filter);
@@ -126,46 +130,13 @@ public class BookSelect extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("Dialog", "filter");
-                setFilter();
+                filterUrl = FilterManager.setFilter(filterCategories, filterChoices);
                 filterDialog.dismiss();
+                loadBooks();
             }
         });
-        filterOptions = filterDialog.findViewById(R.id.filterOptions);
-        setupFilter();
     }
-    private void setFilter() {
-        int categoriesNum = filterCategories.size();
-        Log.d("Filter Categories", Integer.toString(categoriesNum));
-        for (int i = 0; i < categoriesNum; i++) {
-            ArrayList<FilterGroupItem> filterChoiceList = filterChoices.get(filterCategories.get(i));
-            for (int j = 0; j < filterChoiceList.size(); j++) {
-                FilterGroupItem choice = filterChoiceList.get(j);
-                switch (choice.getCheckState()) {
-                    default:
-                    case 0:
-                        //unchecked
-                        break;
-                    case 1:
-                        //checked
-                        filterUrl = filterUrl + "&tagsAdd=" + choice.getFilterUrl();
-                        break;
-                    case 2:
-                        //removed
-                        filterUrl = filterUrl + "&tagsRemove=" + choice.getFilterUrl();
-                        break;
-                }
-            }
-        }
-        Log.d("Filter Url", filterUrl);
-    }
-    private void setupFilter() {
-        filterChoices = GenerateFilterOptions.generateFilterOptions("royalroad");
-        filterCategories = new ArrayList<String>(filterChoices.keySet());
-        Log.d("Filter Choices", filterChoices.get(filterCategories.get(0)).get(0).getFilterChoice());
-        filterOptionsAdapter = new FilterExpandableListAdapter(this, filterCategories, filterChoices);
-        filterOptions.setAdapter(filterOptionsAdapter);
 
-    }
     public void navigate(View button) {
         if (button == previous) {
             if (currentPage != 1) {
