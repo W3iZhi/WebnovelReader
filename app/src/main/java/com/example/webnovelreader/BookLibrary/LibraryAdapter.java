@@ -39,7 +39,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
     public void onBindViewHolder(@NonNull LibraryAdapter.ViewHolder holder, int position) {
         BookItem bookItem = bookItems.get(position);
 
-        String imageName = bookItem.getTitle().replaceAll("\\s", "_").replaceAll("/", "\\") + ".png";
+        String imageName = bookItem.getTitle().replaceAll("\\s", "_").replaceAll("/", "\\\\") + ".png";
         ContextWrapper cw = new ContextWrapper(holder.itemView.getContext());
         final File directory = cw.getDir("bookImages", Context.MODE_PRIVATE);
         File image = new File(directory, imageName);
