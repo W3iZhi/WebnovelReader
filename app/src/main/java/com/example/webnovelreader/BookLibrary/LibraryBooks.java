@@ -66,13 +66,8 @@ public class LibraryBooks extends SQLiteOpenHelper {
         Gson gson = new Gson();
         String bookJson = gson.toJson(bookItem, BookItem.class);
 
-        String imageUrl = "";
-        if(Character.compare(bookItem.getImgUrl().charAt(0), '/') == 0) {
-            imageUrl = "https://www.royalroad.com/" + bookItem.getImgUrl();
-        } else {
-            imageUrl = bookItem.getImgUrl();
-        }
-        // imageName = bookItem.getTitle().replaceAll("\\s", "_");
+        String imageUrl = bookItem.getImgUrl();
+
         String imageName = bookItem.getTitle().replaceAll("\\s", "_").replaceAll("/", "\\\\") + ".png";
         Picasso.get().load(imageUrl).into(PicassoDownload.picassoImageTarget(context, "bookImages", imageName));
 
@@ -114,7 +109,6 @@ public class LibraryBooks extends SQLiteOpenHelper {
                             cursor.getString(cursor.getColumnIndexOrThrow(COL_ITEM_JSON))
                             , BookItem.class));
             while (cursor.moveToNext()) {
-                String bookJson = cursor.getString(cursor.getColumnIndexOrThrow(COL_ITEM_JSON));
                 bookList.add(
                         gson.fromJson(
                                 cursor.getString(cursor.getColumnIndexOrThrow(COL_ITEM_JSON))

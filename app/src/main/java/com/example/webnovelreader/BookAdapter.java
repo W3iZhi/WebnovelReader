@@ -59,13 +59,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         holder.followersView.setText(bookItem.getFollowers());
         holder.viewsView.setText(bookItem.getViews());
         holder.ratingsView.setText(bookItem.getRating());
-        String imageUrl = "";
+        String imageUrl = bookItem.getImgUrl();
         Log.d("index check", bookItem.getTitle() + ", " + bookItem.getImgUrl());
-        if(Character.compare(bookItem.getImgUrl().charAt(0), '/') == 0) {
-            imageUrl = "https://www.royalroad.com/" + bookItem.getImgUrl();
-        } else {
-            imageUrl = bookItem.getImgUrl();
-        }
         Picasso.get().load(imageUrl).into(holder.imageView);
 
     }

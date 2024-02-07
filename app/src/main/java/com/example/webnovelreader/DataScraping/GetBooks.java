@@ -21,6 +21,9 @@ public class GetBooks {
             String imgUrl = data.eq(i)
                     .select("img")
                     .attr("src");
+            if(Character.compare(imgUrl.charAt(0), '/') == 0) {
+                imgUrl = "https://www.royalroad.com/" + imgUrl;
+            }
             String title = data.select("div.col-sm-10 > h2 > a")
                     .eq(i)
                     .text();

@@ -28,7 +28,7 @@ public class HomePage extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.flFragment, library)
                 .commit();
-//        bottomNavigationView.setSelectedItemId(R.id.search);
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
