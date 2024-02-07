@@ -6,5 +6,11 @@
         android:title="Search"
         android:icon="@drawable/search_icon"
         app:showAsAction="always"
-        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+        app:actionViewClass="androidx.appcompat.widget.SearchView"/>
+    <item
+        android:id="@+id/libraryDelete"
+        android:title="Delete"
+        android:icon="@drawable/delete_icon"
+        app:showAsAction="always"
+        android:visible="false"/>
 </menu>

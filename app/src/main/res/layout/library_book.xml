@@ -13,6 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
         <LinearLayout
+            android:id="@+id/bookFrame"
             android:background="#c1cbda"
             android:orientation="vertical"
             android:layout_width="match_parent"

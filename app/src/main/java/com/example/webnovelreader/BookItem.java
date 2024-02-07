@@ -19,6 +19,17 @@ public class BookItem implements Parcelable {
     private String words;
     private String chapters;
     private String rating;
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    private boolean isSelected;
+
     public BookItem() {
 
     }
