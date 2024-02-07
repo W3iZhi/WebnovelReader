@@ -20,10 +20,12 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHolder>{
     ArrayList<BookItem> bookItems;
     Context context;
+
     public LibraryAdapter (ArrayList<BookItem> bookItems, Context context) {
         this.bookItems = bookItems;
         this.context = context;

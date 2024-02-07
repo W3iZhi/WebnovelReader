@@ -2,6 +2,7 @@ package com.example.webnovelreader;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ public class AppSettings extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Toolbar toolbar;
 
     public AppSettings() {
         // Required empty public constructor
@@ -60,5 +62,11 @@ public class AppSettings extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_app_settings, container, false);
+    }
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+        toolbar = view.findViewById(R.id.settingsToolbar);
+        toolbar.setTitle("Settings");
     }
 }

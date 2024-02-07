@@ -22,14 +22,29 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/imageView"
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:layout_weight="0.35"
-                android:src="#88888888" />
+                android:layout_weight="0.35">
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="#88888888" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/bookCheckbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:background="#B3000000"
+                    android:button="@drawable/bookmark_checkbox" />
+            </RelativeLayout>
+
 
             <LinearLayout
                 android:background="#d7e2f3"
@@ -43,6 +58,8 @@
                     android:layout_height="0dp"
                     android:layout_weight="0.1">
                     <TextView
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
                         android:id="@+id/titleView"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMaxTextSize="20sp"
@@ -57,13 +74,6 @@
                         android:shadowRadius="2"
                         android:textStyle="bold"
                         />
-                    <com.google.android.material.checkbox.MaterialCheckBox
-                        android:id="@+id/bookCheckbox"
-                        android:layout_margin="0dp"
-                        android:layout_weight="0.2"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:button="@drawable/bookmark_checkbox"/>
                 </LinearLayout>
 
                 <ScrollView
@@ -85,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="0.15"
-                    android:background="#c1cbda"
+
                     >
                     <LinearLayout
                         android:layout_width="0dp"
