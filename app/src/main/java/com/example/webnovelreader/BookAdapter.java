@@ -19,11 +19,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.webnovelreader.BookDetails.BookDetails;
+import com.example.webnovelreader.BookDetails.ChapterItem;
+import com.example.webnovelreader.BookDetails.ChaptersDatabase;
 import com.example.webnovelreader.BookLibrary.LibraryBooks;
+import com.example.webnovelreader.DataScraping.WebscraperManager;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
@@ -31,10 +35,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     private ArrayList<BookItem> bookItems;
     private Context context;
     private LibraryBooks libraryBooks;
+    private ChaptersDatabase chaptersDatabase;
+    private String source;
 
-    public BookAdapter(ArrayList<BookItem> bookItems, Context context) {
+    public BookAdapter(ArrayList<BookItem> bookItems, Context context, String source) {
         this.bookItems = bookItems;
         this.context = context;
+        this.source= source;
     }
 
     @NonNull
@@ -102,17 +109,32 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
             itemView.setOnClickListener(this);
             libraryBooks = new LibraryBooks(context);
-
+            chaptersDatabase = new ChaptersDatabase(context);
             bookCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     int position = getBindingAdapterPosition();
+                    BookItem currentBook = bookItems.get(position);
                     if(bookCheckBox.isChecked()) {
                         Log.d("Book Checkbox", "Add to library");
-                        libraryBooks.addNewBook(bookItems.get(position));
+                        libraryBooks.addNewBook(currentBook);
+                        chaptersDatabase.createChaptersTable(currentBook);
+                        ArrayList<ChapterItem> chapterItems = new ArrayList<>();
+                        Thread thread = new Thread() {
+                            @Override
+                            public void run() {
+                                WebscraperManager.scrapeChapters(currentBook, chapterItems);
+                                for (ChapterItem chapterItem : chapterItems) {
+                                    chaptersDatabase.addChapter(chapterItem);
+                                }
+                            }
+                        };
+
+                        thread.start();
                     } else {
                         Log.d("Book Checkbox", "Remove from library");
-                        libraryBooks.removeBook(bookItems.get(position));
+                        libraryBooks.removeBook(currentBook);
+                        chaptersDatabase.removeChapterTable(currentBook);
                     }
                 }
             });
@@ -124,8 +146,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             BookItem bookItem = bookItems.get(position);
 
             Intent intent = new Intent(context, BookDetails.class);
-
             intent.putExtra("book", bookItem);
+
 
             context.startActivity(intent);
         }

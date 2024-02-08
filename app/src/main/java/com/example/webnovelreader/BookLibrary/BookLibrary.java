@@ -29,6 +29,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.example.webnovelreader.BookDetails.ChapterItem;
+import com.example.webnovelreader.BookDetails.ChaptersDatabase;
 import com.example.webnovelreader.BookItem;
 import com.example.webnovelreader.R;
 
@@ -40,12 +42,14 @@ public class BookLibrary extends Fragment implements SelectionListener{
 
     private RecyclerView recyclerView;
     private static ArrayList<BookItem> bookItems, selectedBooks;
+    private static ArrayList<ChapterItem> chapterItems;
     private LibraryBooks libraryBooks;
     private LibraryAdapter adapter;
     private Toolbar toolbar;
     private SearchView searchView;
     private static boolean selectionMode;
     private MenuItem delete;
+    private ChaptersDatabase chaptersDatabase;
 
     @Override
     public void selection(int selected) {
@@ -113,6 +117,8 @@ public class BookLibrary extends Fragment implements SelectionListener{
         delete = toolbar.getMenu().findItem(R.id.libraryDelete);
 
         libraryBooks = new LibraryBooks(getActivity());
+        chaptersDatabase = new ChaptersDatabase(getActivity());
+
         bookItems = libraryBooks.bookList();
 
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -152,6 +158,7 @@ public class BookLibrary extends Fragment implements SelectionListener{
             Log.d("Library", "Removed book: " + bookItem.getTitle());
             libraryBooks.removeBook(bookItem);
             bookItems.remove(bookItem);
+            chaptersDatabase.removeChapterTable(bookItem);
         }
 
         selection(0);

@@ -19,7 +19,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.webnovelreader.DataScraping.GetBooks;
+
+import com.example.webnovelreader.DataScraping.WebscraperManager;
 import com.example.webnovelreader.Filter.FilterExpandableListAdapter;
 import com.example.webnovelreader.Filter.FilterGroupItem;
 import com.example.webnovelreader.Filter.FilterManager;
@@ -49,13 +50,14 @@ public class BookSelect extends AppCompatActivity {
     private ImageButton advancedSearch, search;
     private static int currentPage;
     private String searchWord, filterUrl, source;
-    private int maxPages;
+    private int[] maxPages = new int[1];
     private BottomSheetDialog filterDialog;
     private HashMap<String, ArrayList<FilterGroupItem>> filterChoices;
     private ArrayList<String> filterCategories;
     private ExpandableListView filterOptions;
     private ExpandableListAdapter filterOptionsAdapter;
     private CheckBox checkBox;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +80,7 @@ public class BookSelect extends AppCompatActivity {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new BookAdapter(bookItems, this);
+        adapter = new BookAdapter(bookItems, this, source);
         recyclerView.setAdapter(adapter);
 
         pageView.setText(Integer.toString(currentPage));
@@ -147,7 +149,7 @@ public class BookSelect extends AppCompatActivity {
                 Toast.makeText(this, "This is the first page", Toast.LENGTH_LONG).show();
             }
         } else if (button == next) {
-            if (currentPage != maxPages) {
+            if (currentPage != maxPages[0]) {
                 currentPage++;
                 Log.d("clicked", "next");
                 loadBooks();
@@ -171,7 +173,7 @@ public class BookSelect extends AppCompatActivity {
             super.onPostExecute(unused);
             progressBar.setVisibility(View.GONE);
             progressBar.startAnimation(AnimationUtils.loadAnimation(BookSelect.this, android.R.anim.fade_out));
-            maxPage.setText("/" + maxPages);
+            maxPage.setText("/" + maxPages[0]);
             adapter.notifyDataSetChanged();
         }
 
@@ -182,29 +184,7 @@ public class BookSelect extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            if (source.equals("royalroad")) {
-                try {
-
-                    Log.d("scrapping", "executed");
-                    String base = "https://www.royalroad.com/fictions/search?page=";
-                    int page = currentPage;
-                    String url = base + page + "&keyword=" + searchWord + filterUrl;
-                    Document doc = Jsoup.connect(url)
-                            .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
-                                    " AppleWebKit/537.36(KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
-                            .header("Accept-Language", "*")
-                            .get();
-                    Log.d("scrapping", "connected");
-                    String maxPageNum = doc.select("ul.pagination > *").eq(6).select("a").attr("data-page");
-                    if (maxPages < Integer.parseInt(maxPageNum)) {
-                        maxPages = Integer.parseInt(maxPageNum);
-                    }
-                    Log.d("maxPages", "Number: " + maxPages);
-                    GetBooks.scrapeRoyalroad(doc, bookItems);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            WebscraperManager.scrapeBooks(source, currentPage, searchWord, filterUrl, maxPages, bookItems);
             return null;
 
         }

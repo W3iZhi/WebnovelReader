@@ -2,6 +2,7 @@ package com.example.webnovelreader.DataScraping;
 
 import android.util.Log;
 
+import com.example.webnovelreader.BookDetails.ChapterItem;
 import com.example.webnovelreader.BookItem;
 
 import org.jsoup.Jsoup;
@@ -13,8 +14,52 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class GetBooks {
-    public static void scrapeRoyalroad(Document doc, ArrayList<BookItem> bookItems) {
+public class WebscraperManager {
+    public static IOException scrapeBooks(String source, int currentPage, String searchWord, String filterUrl, int[] maxPages, ArrayList<BookItem> bookItems) {
+        try {
+            if (source.equals("royalroad")) {
+                Log.d("scrapping", "executed");
+                String base = "https://www.royalroad.com/fictions/search?page=";
+                int page = currentPage;
+                String url = base + page + "&keyword=" + searchWord + filterUrl;
+                Document doc = Jsoup.connect(url)
+                        .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
+                                " AppleWebKit/537.36(KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+                        .header("Accept-Language", "*")
+                        .get();
+                Log.d("scrapping", "connected");
+                String maxPageNum = doc.select("ul.pagination > *").eq(6).select("a").attr("data-page");
+                if (maxPages[0] < Integer.parseInt(maxPageNum)) {
+                    maxPages[0] = Integer.parseInt(maxPageNum);
+                }
+                Log.d("maxPages", "Number: " + maxPages);
+                WebscraperManager.scrapeRoyalroadBooks(doc, bookItems);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static IOException scrapeChapters(BookItem currentBook, ArrayList<ChapterItem> chapterItems) {
+        try {
+            if (currentBook.getSource().equals("royalroad")) {
+                String baseUrl = "https://www.royalroad.com";
+                String bookUrl = currentBook.getBookUrl();
+                String url = baseUrl + bookUrl;
+                Document doc = Jsoup.connect(url)
+                        .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
+                                " AppleWebKit/537.36(KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+                        .header("Accept-Language", "*")
+                        .get();
+                Log.d("scrapping", "connected");
+                WebscraperManager.scrapeRoyalroadBookChapters(doc, chapterItems, currentBook.getTitle());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static void scrapeRoyalroadBooks(Document doc, ArrayList<BookItem> bookItems) {
         Elements data = doc.select("div.fiction-list-item");
         int size = data.size();
         for (int i = 0; i < size; i++) {
@@ -64,7 +109,7 @@ public class GetBooks {
             for (Element tag : tagList) {
                 tags.add(tag.text());
             }
-            bookItems.add(new BookItem(imgUrl, title, description, bookUrl, followers, views, words, chapters, rating, tags));
+            bookItems.add(new BookItem(imgUrl, title, description, bookUrl, followers, views, words, chapters, rating, tags, "royalroad"));
             Log.d("items"
                     , "img: " + imgUrl
                             + " , title: " + title
@@ -75,6 +120,16 @@ public class GetBooks {
                             + " , words: " + words
                             + " , chapters: " + chapters
                             + " , rating: " + rating);
+        }
+    }
+    public static void scrapeRoyalroadBookChapters(Document doc, ArrayList<ChapterItem> chapterItems, String bookName) {
+        Elements data = doc.select("table#chapters > tbody > tr");
+        int size = data.size();
+        for (int i = 0; i < size; i ++) {
+            String chapterName = data.eq(i).select("td > a").eq(0).text();
+            String chapterUrl = data.eq(i).select("td > a").attr("href");
+            chapterItems.add(new ChapterItem(chapterName, chapterUrl, i, bookName));
+            Log.d("chapters", "chapterName: " + chapterName + " , chapterUrl: " + chapterUrl);
         }
     }
 }

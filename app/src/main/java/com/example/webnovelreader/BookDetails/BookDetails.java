@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.webnovelreader.BookItem;
+import com.example.webnovelreader.DataScraping.WebscraperManager;
 import com.example.webnovelreader.R;
 import com.google.android.flexbox.FlexboxLayout;
 import com.squareup.picasso.Picasso;
@@ -37,10 +38,12 @@ public class BookDetails extends AppCompatActivity {
     private ProgressBar progressBar;
     private FlexboxLayout tagsLayout;
     private BookItem currentBook;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_details);
+
 
         currentBook = getIntent().getParcelableExtra("book");
 
@@ -93,6 +96,7 @@ public class BookDetails extends AppCompatActivity {
         content.execute();
 
     }
+
     private class Content extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -116,28 +120,7 @@ public class BookDetails extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            try {
-                String baseUrl = "https://www.royalroad.com";
-                String bookUrl = currentBook.getBookUrl();
-                String url = baseUrl + bookUrl;
-                Document doc = Jsoup.connect(url)
-                        .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
-                                " AppleWebKit/537.36(KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
-                        .header("Accept-Language", "*")
-                        .get();
-                Log.d("scrapping", "connected");
-
-                Elements data = doc.select("table#chapters > tbody > tr");
-                int size = data.size();
-                for (int i = 0; i < size; i ++) {
-                    String chapterName = data.eq(i).select("td > a").eq(0).text();
-                    String chapterUrl = data.eq(i).select("td > a").attr("href");
-                    chapterItems.add(new ChapterItem(chapterName, chapterUrl, i));
-                    Log.d("chapters", "chapterName: " + chapterName + " , chapterUrl: " + chapterUrl);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            WebscraperManager.scrapeChapters(currentBook, chapterItems);
             return null;
         }
     }

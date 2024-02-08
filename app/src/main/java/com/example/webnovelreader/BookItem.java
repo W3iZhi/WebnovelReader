@@ -19,24 +19,19 @@ public class BookItem implements Parcelable {
     private String words;
     private String chapters;
     private String rating;
+    private String source;
 
-    public boolean isSelected() {
-        return isSelected;
+    public String getSource() {
+        return source;
     }
 
-    public void setSelected(boolean selected) {
-        isSelected = selected;
-    }
-
-    private boolean isSelected;
-
-    public BookItem() {
-
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public BookItem(String imgUrl, String title, String description, String bookUrl,
                     String followers, String views, String words, String chapters,
-                    String rating, ArrayList<String> tags) {
+                    String rating, ArrayList<String> tags, String source) {
         this.imgUrl = imgUrl;
         this.title = title;
         this.description = description;
@@ -47,6 +42,7 @@ public class BookItem implements Parcelable {
         this.chapters = chapters;
         this.rating = rating;
         this.tags = tags;
+        this.source = source;
     }
 
     protected BookItem(Parcel in) {
@@ -60,6 +56,7 @@ public class BookItem implements Parcelable {
         words = in.readString();
         chapters = in.readString();
         rating = in.readString();
+        source = in.readString();
     }
 
     public static final Creator<BookItem> CREATOR = new Creator<BookItem>() {
@@ -171,5 +168,6 @@ public class BookItem implements Parcelable {
         dest.writeString(words);
         dest.writeString(chapters);
         dest.writeString(rating);
+        dest.writeString(source);
     }
 }

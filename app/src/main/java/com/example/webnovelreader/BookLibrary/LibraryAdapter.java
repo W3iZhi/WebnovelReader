@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.webnovelreader.BookAdapter;
 import com.example.webnovelreader.BookDetails.BookDetails;
+import com.example.webnovelreader.BookDetails.ChapterItem;
+import com.example.webnovelreader.BookDetails.ChaptersDatabase;
 import com.example.webnovelreader.BookItem;
 import com.example.webnovelreader.R;
 import com.squareup.picasso.Picasso;
@@ -115,6 +117,9 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
                     selectionListener.selection(selected);
                 } else {
                     Intent intent = new Intent(context, BookDetails.class);
+
+                    ChaptersDatabase chaptersDatabase = new ChaptersDatabase(context);
+                    ArrayList<ChapterItem> chapterItems = chaptersDatabase.chaptersList(bookItem.getTitle());
 
                     intent.putExtra("book", bookItem);
 

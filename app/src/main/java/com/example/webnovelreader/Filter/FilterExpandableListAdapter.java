@@ -15,7 +15,7 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-//TODO: Prevent dialog from scrolling when scrolling expandablelist
+
 public class FilterExpandableListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private ArrayList<String> filterCategories;

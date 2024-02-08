@@ -46,7 +46,7 @@ public class LibraryBooks extends SQLiteOpenHelper {
 
     public boolean containsBook(BookItem bookItem) {
         boolean contains = false;
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         String query = "Select * from " + TABLE_NAME + " where " + COL_NAME + " =?";
         Cursor cursor = db.rawQuery(query, new String[] {bookItem.getTitle()});
         if (cursor.getCount() > 0) {

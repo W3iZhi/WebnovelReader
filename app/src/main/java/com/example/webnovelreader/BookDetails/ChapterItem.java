@@ -9,17 +9,28 @@ public class ChapterItem implements Parcelable {
     private String chapterName;
     private String chapterUrl;
     private int chapterIndex;
+    private String bookName;
 
-    public ChapterItem(String chapterName, String chapterUrl, int chapterIndex) {
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    public ChapterItem(String chapterName, String chapterUrl, int chapterIndex, String bookName) {
         this.chapterName = chapterName;
         this.chapterUrl = chapterUrl;
         this.chapterIndex = chapterIndex;
+        this.bookName = bookName;
     }
 
     protected ChapterItem(Parcel in) {
         chapterName = in.readString();
         chapterUrl = in.readString();
         chapterIndex = in.readInt();
+        bookName = in.readString();
     }
 
     public static final Creator<ChapterItem> CREATOR = new Creator<ChapterItem>() {
@@ -68,5 +79,6 @@ public class ChapterItem implements Parcelable {
         dest.writeString(chapterName);
         dest.writeString(chapterUrl);
         dest.writeInt(chapterIndex);
+        dest.writeString(bookName);
     }
 }
