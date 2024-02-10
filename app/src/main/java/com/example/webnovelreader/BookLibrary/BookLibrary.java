@@ -117,6 +117,7 @@ public class BookLibrary extends Fragment implements SelectionListener{
         delete = toolbar.getMenu().findItem(R.id.libraryDelete);
 
         libraryBooks = new LibraryBooks(getActivity());
+
         chaptersDatabase = new ChaptersDatabase(getActivity());
 
         bookItems = libraryBooks.bookList();

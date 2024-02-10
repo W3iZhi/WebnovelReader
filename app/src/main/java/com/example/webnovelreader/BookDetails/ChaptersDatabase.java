@@ -64,7 +64,7 @@ public class ChaptersDatabase extends SQLiteOpenHelper {
                 + COL_CHAPTER_INDEX + " INTEGER, "
                 + COL_CHAPTER_NAME + " TEXT, "
                 + COL_CHAPTER_URL + " TEXT, "
-                + COL_IS_READ + " TEXT, "
+                + COL_IS_READ + " INTEGER, "
                 + COL_CHAPTER_DATA + " TEXT);";
         this.getWritableDatabase().execSQL(query);
     }
@@ -111,6 +111,7 @@ public class ChaptersDatabase extends SQLiteOpenHelper {
         values.put(COL_CHAPTER_INDEX, chapterItem.getChapterIndex());
         values.put(COL_CHAPTER_NAME, chapterItem.getChapterName());
         values.put(COL_CHAPTER_URL, chapterItem.getChapterUrl());
+        values.put(COL_IS_READ, chapterItem.isRead());
         long success = db.insert(tableName, null, values);
         if (success == -1) {
             Log.d("Chapters Database Insertion", "No Success");
@@ -131,10 +132,23 @@ public class ChaptersDatabase extends SQLiteOpenHelper {
         if (!containsTable(bookName)) {
             return null;
         }
+
         String tableName = bookName.replaceAll("\\s", "_").replaceAll("\\p{P}", "_");
         ArrayList<ChapterItem> chaptersList = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
-        //TODO: make an arraylist of ChapterItem from table
+        Cursor cursor = db.rawQuery("Select * from " + tableName, null);
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String chapterName = cursor.getString(cursor.getColumnIndexOrThrow(COL_CHAPTER_NAME));
+                int chapterIndex = cursor.getInt(cursor.getColumnIndexOrThrow(COL_CHAPTER_INDEX));
+                String chapterUrl = cursor.getString(cursor.getColumnIndexOrThrow(COL_CHAPTER_URL));
+                int isRead = cursor.getInt(cursor.getColumnIndexOrThrow(COL_IS_READ));
+                ChapterItem chapterItem = new ChapterItem(chapterName, chapterUrl, chapterIndex, bookName, isRead);
+                chaptersList.add(chapterItem);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
         db.close();
         return chaptersList;
     }

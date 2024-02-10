@@ -3,6 +3,7 @@ package com.example.webnovelreader.DataScraping;
 import android.util.Log;
 
 import com.example.webnovelreader.BookDetails.ChapterItem;
+import com.example.webnovelreader.BookDetails.ChaptersDatabase;
 import com.example.webnovelreader.BookItem;
 
 import org.jsoup.Jsoup;
@@ -13,6 +14,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.SimpleTimeZone;
 
 public class WebscraperManager {
     public static IOException scrapeBooks(String source, int currentPage, String searchWord, String filterUrl, int[] maxPages, ArrayList<BookItem> bookItems) {
@@ -58,6 +60,35 @@ public class WebscraperManager {
             e.printStackTrace();
         }
         return null;
+    }
+    public static IOException scrapeChaptersToDatabase(BookItem currentBook, ChaptersDatabase chaptersDatabase) {
+        try {
+            if (currentBook.getSource().equals("royalroad")) {
+                String baseUrl = "https://www.royalroad.com";
+                String bookUrl = currentBook.getBookUrl();
+                String url = baseUrl + bookUrl;
+                Document doc = Jsoup.connect(url)
+                        .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
+                                " AppleWebKit/537.36(KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+                        .header("Accept-Language", "*")
+                        .get();
+                Log.d("scrapping", "connected");
+                WebscraperManager.scrapeRoyalroadBookChaptersToDatabase(doc, chaptersDatabase, currentBook.getTitle());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static void scrapeRoyalroadBookChaptersToDatabase (Document doc, ChaptersDatabase chaptersDatabase, String bookName) {
+        Elements data = doc.select("table#chapters > tbody > tr");
+        int size = data.size();
+        for (int i = 0; i < size; i ++) {
+            String chapterName = data.eq(i).select("td > a").eq(0).text();
+            String chapterUrl = data.eq(i).select("td > a").attr("href");
+            chaptersDatabase.addChapter(new ChapterItem(chapterName, chapterUrl, i, bookName, 0));
+            Log.d("chapters", "chapterName: " + chapterName + " , chapterUrl: " + chapterUrl);
+        }
     }
     public static void scrapeRoyalroadBooks(Document doc, ArrayList<BookItem> bookItems) {
         Elements data = doc.select("div.fiction-list-item");
@@ -128,7 +159,7 @@ public class WebscraperManager {
         for (int i = 0; i < size; i ++) {
             String chapterName = data.eq(i).select("td > a").eq(0).text();
             String chapterUrl = data.eq(i).select("td > a").attr("href");
-            chapterItems.add(new ChapterItem(chapterName, chapterUrl, i, bookName));
+            chapterItems.add(new ChapterItem(chapterName, chapterUrl, i, bookName, 0));
             Log.d("chapters", "chapterName: " + chapterName + " , chapterUrl: " + chapterUrl);
         }
     }

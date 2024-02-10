@@ -120,8 +120,9 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
 
                     ChaptersDatabase chaptersDatabase = new ChaptersDatabase(context);
                     ArrayList<ChapterItem> chapterItems = chaptersDatabase.chaptersList(bookItem.getTitle());
-
                     intent.putExtra("book", bookItem);
+                    intent.putParcelableArrayListExtra("chaptersList", chapterItems);
+
 
                     context.startActivity(intent);
                 }

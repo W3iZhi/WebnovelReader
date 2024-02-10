@@ -1,5 +1,6 @@
 package com.example.webnovelreader;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +30,8 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
@@ -83,8 +86,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         TextView titleView, descriptionView, chaptersView, wordsView, followersView,viewsView,ratingsView;
         ScrollView scrollView;
         MaterialCheckBox bookCheckBox;
-
-
+        ProgressDialog progressDialog;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
@@ -115,22 +117,27 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     int position = getBindingAdapterPosition();
                     BookItem currentBook = bookItems.get(position);
+
                     if(bookCheckBox.isChecked()) {
                         Log.d("Book Checkbox", "Add to library");
                         libraryBooks.addNewBook(currentBook);
                         chaptersDatabase.createChaptersTable(currentBook);
                         ArrayList<ChapterItem> chapterItems = new ArrayList<>();
+                        progressDialog = new ProgressDialog(context);
+                        progressDialog.setMessage("Adding to Library:\n" + currentBook.getTitle());
+                        progressDialog.setCancelable(false);
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
                         Thread thread = new Thread() {
                             @Override
                             public void run() {
-                                WebscraperManager.scrapeChapters(currentBook, chapterItems);
-                                for (ChapterItem chapterItem : chapterItems) {
-                                    chaptersDatabase.addChapter(chapterItem);
-                                }
+                                WebscraperManager.scrapeChaptersToDatabase(currentBook, chaptersDatabase);
+                                progressDialog.dismiss();
                             }
                         };
 
                         thread.start();
+
                     } else {
                         Log.d("Book Checkbox", "Remove from library");
                         libraryBooks.removeBook(currentBook);
@@ -139,7 +146,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                 }
             });
         }
-
         @Override
         public void onClick(View view) {
             int position = getBindingAdapterPosition();

@@ -46,7 +46,8 @@ public class BookDetails extends AppCompatActivity {
 
 
         currentBook = getIntent().getParcelableExtra("book");
-
+        chapterItems = getIntent().getParcelableArrayListExtra("chaptersList");
+        //chapterItems = getIntent().getParcelableExtra("chaptersList");
         progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.recyclerView);
         imageView = findViewById(R.id.imageView);
@@ -92,9 +93,10 @@ public class BookDetails extends AppCompatActivity {
         adapter = new ChapterAdapter(chapterItems, this);
         recyclerView.setAdapter(adapter);
 
-        Content content = new Content();
-        content.execute();
-
+        if (chapterItems == null) {
+            Content content = new Content();
+            content.execute();
+        }
     }
 
     private class Content extends AsyncTask<Void, Void, Void> {
