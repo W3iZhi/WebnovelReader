@@ -1,5 +1,6 @@
 package com.example.webnovelreader.BookDetails;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.webnovelreader.BookItem;
 import com.example.webnovelreader.DataScraping.WebscraperManager;
@@ -33,25 +36,26 @@ public class BookDetails extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ChapterAdapter adapter;
     private ImageView imageView;
-    private TextView titleView, descriptionView, chapters, words, followers, views, ratings;
+    private TextView descriptionView, chapters, words, followers, views, ratings;
+    private MenuItem download;
     private ArrayList<ChapterItem> chapterItems = new ArrayList<>();
     private ProgressBar progressBar;
     private FlexboxLayout tagsLayout;
     private BookItem currentBook;
+    private Toolbar toolbar;
+    private ChaptersDatabase chaptersDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_details);
 
-
+        chaptersDatabase = new ChaptersDatabase(this);
         currentBook = getIntent().getParcelableExtra("book");
         chapterItems = getIntent().getParcelableArrayListExtra("chaptersList");
-        //chapterItems = getIntent().getParcelableExtra("chaptersList");
         progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.recyclerView);
         imageView = findViewById(R.id.imageView);
-        titleView = findViewById(R.id.titleView);
         descriptionView = findViewById(R.id.descriptionView);
         tagsLayout = findViewById(R.id.tagsLayout);
         chapters = findViewById(R.id.chapters);
@@ -59,10 +63,12 @@ public class BookDetails extends AppCompatActivity {
         followers = findViewById(R.id.followers);
         views = findViewById(R.id.views);
         ratings = findViewById(R.id.ratings);
+        toolbar = findViewById(R.id.bookToolbar);
 
+        toolbar.setTitle(currentBook.getTitle());
+        toolbar.inflateMenu(R.menu.book_details_menu);
+        download = toolbar.getMenu().findItem(R.id.chaptersDownload);
 
-
-        titleView.setText(currentBook.getTitle());
         Picasso.get().load(currentBook.getImgUrl()).into(imageView);
 
         ArrayList<String> tags = currentBook.getTags();
@@ -86,6 +92,7 @@ public class BookDetails extends AppCompatActivity {
         views.setText(currentBook.getViews());
         ratings.setText("Rating\n" + currentBook.getRating());
 
+
         descriptionView.setText(currentBook.getDescription());
 
         recyclerView.setHasFixedSize(true);
@@ -97,6 +104,19 @@ public class BookDetails extends AppCompatActivity {
             Content content = new Content();
             content.execute();
         }
+        download.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                Log.d("Chapters Database", "Downloading Chapter Data");
+                //TODO: Implement thread to scrape chapterData for offline reading
+//                Thread thread = new Thread() {
+//                    @Override
+//                    public void run() {
+//                    }
+//                }
+                return false;
+            }
+        });
     }
 
     private class Content extends AsyncTask<Void, Void, Void> {

@@ -21,8 +21,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-
         tools:context=".BookDetails.BookDetails">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/bookToolbar"
+            app:titleTextColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"/>
         <LinearLayout
             android:layout_margin="4dp"
             android:padding="4dp"
@@ -45,10 +49,9 @@
                 android:orientation="vertical"
                 android:background="#c1cbda">
                 <TextView
-                    android:id="@+id/titleView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Title"
+                    android:text="Synopsis"
                     android:shadowColor="#80000000"
                     android:shadowDx="1"
                     android:shadowDy="1"
