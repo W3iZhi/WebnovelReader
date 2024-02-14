@@ -81,32 +81,6 @@ public class WebscraperManager {
             Log.d("scrapping", "connected");
 
             scrapeRoyalroadChapterData(doc, paragraphItems);
-//            Elements data = doc.select("div.chapter-inner > *");
-//            if (data.first().is("div")) {
-//                data = data.select("> *");
-//            }
-//            int size = data.size();
-//            Log.d("No. of Paragraphs", Integer.toString(size));
-//
-//            for (int i = 0; i < size; i ++) {
-//                boolean isTable = false;
-//                String paragraph = "";
-//                Elements tableData = null;
-//                Elements currentParagraph = data.eq(i);
-//
-//                if (currentParagraph.is("div")) {
-//                    isTable = true;
-//                    tableData = currentParagraph.select("table > tbody > *");
-//                } else {
-//                    paragraph = currentParagraph.text();
-//                }
-//                if (isTable) {
-//                    paragraphItems.add(new ParagraphItem(paragraph, isTable, tableData, false));
-//                } else {
-//                    paragraphItems.add(new ParagraphItem(paragraph, isTable, false));
-//                }
-//                Log.d("paragraphs", "paragraph: " + paragraph + " , isTable: " + isTable);
-//            }
         } catch (IOException e) {
             e.printStackTrace();
         }

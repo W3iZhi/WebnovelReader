@@ -117,7 +117,8 @@ public class BookSelect extends AppCompatActivity {
         dialogBehavior.setDraggable(false);
         filterOptions = filterDialog.findViewById(R.id.filterOptions);
 
-        FilterManager.setupFilter(this, filterCategories, filterChoices, filterOptionsAdapter, filterOptions);
+        filterChoices = GenerateFilterOptions.generateFilterOptions(source);
+        filterCategories = FilterManager.setupFilter(this, filterCategories, filterChoices, filterOptionsAdapter, filterOptions);
 
         reset = filterDialog.findViewById(R.id.reset);
         filter = filterDialog.findViewById(R.id.filter);

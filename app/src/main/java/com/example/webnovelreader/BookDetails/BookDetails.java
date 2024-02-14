@@ -51,8 +51,12 @@ public class BookDetails extends AppCompatActivity {
         setContentView(R.layout.activity_book_details);
 
         chaptersDatabase = new ChaptersDatabase(this);
+
         currentBook = getIntent().getParcelableExtra("book");
-        chapterItems = getIntent().getParcelableArrayListExtra("chaptersList");
+        if (chaptersDatabase.containsTable(currentBook.getTitle())) {
+            Log.d("Book Details", "Taking data from database");
+            chapterItems = chaptersDatabase.chaptersList(currentBook.getTitle());
+        }
         progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.recyclerView);
         imageView = findViewById(R.id.imageView);
@@ -99,9 +103,8 @@ public class BookDetails extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ChapterAdapter(chapterItems, this);
         recyclerView.setAdapter(adapter);
-
-        if (chapterItems == null) {
-            Content content = new Content();
+        Content content = new Content();
+        if (chapterItems.isEmpty()) {
             content.execute();
         }
         download.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -143,6 +146,7 @@ public class BookDetails extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             WebscraperManager.scrapeChapters(currentBook, chapterItems);
+            Log.d("Book Details", "Chapters Scraped");
             return null;
         }
     }

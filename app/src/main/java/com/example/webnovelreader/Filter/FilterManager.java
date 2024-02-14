@@ -15,13 +15,12 @@ import java.util.HashMap;
 public class FilterManager {
 
     //TODO: Keep track of the filter inside filter options
-    public static void setupFilter(Context context, ArrayList<String> filterCategories, HashMap<String, ArrayList<FilterGroupItem>> filterChoices, ExpandableListAdapter filterOptionsAdapter, ExpandableListView filterOptions) {
-        filterChoices = GenerateFilterOptions.generateFilterOptions("royalroad");
+    public static ArrayList<String> setupFilter(Context context, ArrayList<String> filterCategories, HashMap<String, ArrayList<FilterGroupItem>> filterChoices, ExpandableListAdapter filterOptionsAdapter, ExpandableListView filterOptions) {
         filterCategories = new ArrayList<String>(filterChoices.keySet());
         Log.d("Filter Choices", filterChoices.get(filterCategories.get(0)).get(0).getFilterChoice());
         filterOptionsAdapter = new FilterExpandableListAdapter(context, filterCategories, filterChoices);
         filterOptions.setAdapter(filterOptionsAdapter);
-
+        return filterCategories;
     }
     public static String setFilter(ArrayList<String> filterCategories, HashMap<String, ArrayList<FilterGroupItem>> filterChoices) {
         String filterUrl = "";

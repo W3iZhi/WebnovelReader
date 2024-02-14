@@ -120,9 +120,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
                     if(bookCheckBox.isChecked()) {
                         Log.d("Book Checkbox", "Add to library");
+                        if (libraryBooks.containsBook(currentBook)) {
+                            return;
+                        }
                         libraryBooks.addNewBook(currentBook);
                         chaptersDatabase.createChaptersTable(currentBook);
                         ArrayList<ChapterItem> chapterItems = new ArrayList<>();
+
                         progressDialog = new ProgressDialog(context);
                         progressDialog.setMessage("Adding to Library:\n" + currentBook.getTitle());
                         progressDialog.setCancelable(false);
