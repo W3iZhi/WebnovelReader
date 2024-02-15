@@ -103,8 +103,7 @@ public class ParagraphAdapter extends RecyclerView.Adapter<ParagraphAdapter.View
             holder.paragraphView.setText(paragraphItem.getParagraph());
         }
         if (position == (getItemCount()-1)) {
-            ((BookReader)context).transitionChapter();
-            ((BookReader)context).loadnextChapter();
+            ((BookReader)context).loadNextChapter();
         }
     }
 

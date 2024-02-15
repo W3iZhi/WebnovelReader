@@ -43,7 +43,6 @@ public class BookReader extends AppCompatActivity implements OnClickListener, Pa
     int maxChapters;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO: implement way to detect if chapter is downloaded for offline reading
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_reader);
 
@@ -116,21 +115,22 @@ public class BookReader extends AppCompatActivity implements OnClickListener, Pa
     }
 
     @Override
-    public void loadnextChapter() {
+    public void loadNextChapter() {
         if (selectedChapter != maxChapters - 1) {
+            transitionChapter(paragraphItems);
             selectedChapter++;
+            //TODO: Check if next chapter is downloaded
             Content content = new Content();
             content.execute();
         }
     }
 
-    @Override
-    public void transitionChapter() {
+    private void transitionChapter(ArrayList<ParagraphItem> paragraphItems) {
         String currentChapter = chapterItems.get(selectedChapter).getChapterName();
         String nextChapter = selectedChapter != maxChapters -1 ? chapterItems.get(selectedChapter + 1).getChapterName() : "NIL";
-        String transition = "Previous Chapter: " + currentChapter + "\n\n" + "Next Chapter: " + nextChapter;
-        transitionText.setParagraph(transition);
-        transitionText.setTransition(true);
+        String transitionText = "Previous Chapter:\n " + currentChapter + "\n\n" + "Next Chapter:\n " + nextChapter;
+        ParagraphItem transition = new ParagraphItem(transitionText, true);
+        paragraphItems.add(transition);
     }
 
     private class Content extends AsyncTask<Void, Void, Void> {
@@ -157,52 +157,6 @@ public class BookReader extends AppCompatActivity implements OnClickListener, Pa
         @Override
         protected Void doInBackground(Void... voids) {
             WebscraperManager.scrapeChapterData(transitionText, paragraphItems, chapterItems, currentChapter, selectedChapter);
-//            try {
-//                if (transitionText.isTransition()) {
-//                    paragraphItems.add(transitionText);
-//                }
-//                currentChapter = chapterItems.get(selectedChapter);
-//                String baseUrl = "https://www.royalroad.com";
-//                String chapterUrl = currentChapter.getChapterUrl();
-//                Log.d("chapterUrl", "url: " + chapterUrl);
-//                String url = baseUrl + chapterUrl;
-//                Document doc = Jsoup.connect(url)
-//                        .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
-//                                " AppleWebKit/537.36(KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
-//                        .header("Accept-Language", "*")
-//                        .get();
-//                Log.d("scrapping", "connected");
-//
-//
-//                Elements data = doc.select("div.chapter-inner > *");
-//                if (data.first().is("div")) {
-//                    data = data.select("> *");
-//                }
-//                int size = data.size();
-//                Log.d("No. of Paragraphs", Integer.toString(size));
-//
-//                for (int i = 0; i < size; i ++) {
-//                    boolean isTable = false;
-//                    String paragraph = "";
-//                    Elements tableData = null;
-//                    Elements currentParagraph = data.eq(i);
-//
-//                    if (currentParagraph.is("div")) {
-//                        isTable = true;
-//                        tableData = currentParagraph.select("table > tbody > *");
-//                    } else {
-//                        paragraph = currentParagraph.text();
-//                    }
-//                    if (isTable) {
-//                        paragraphItems.add(new ParagraphItem(paragraph, isTable, tableData, false));
-//                    } else {
-//                        paragraphItems.add(new ParagraphItem(paragraph, isTable, false));
-//                    }
-//                    Log.d("paragraphs", "paragraph: " + paragraph + " , isTable: " + isTable);
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
             return null;
         }
     }
