@@ -46,7 +46,6 @@ public class BookReader extends AppCompatActivity implements OnClickListener, Pa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_reader);
 
-        transitionText = new ParagraphItem("", false);
         selectedChapter = getIntent().getIntExtra("selectedChapter", 1);
         chapterItems = getIntent().getParcelableArrayListExtra("chapterList");
         progressBar = findViewById(R.id.progressBar);

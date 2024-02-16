@@ -10,6 +10,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.example.webnovelreader.BookItem;
+import com.example.webnovelreader.BookReader.ParagraphItem;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -151,5 +153,17 @@ public class ChaptersDatabase extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return chaptersList;
+    }
+
+    public void addChapterData(ChapterItem chapterItem, ArrayList<ParagraphItem> paragraphItems) {
+        Gson gson = new Gson();
+        String textJson = gson.toJson(paragraphItems, ParagraphItem.class);
+        int chapterIndex = chapterItem.getChapterIndex();
+        SQLiteDatabase db = this.getWritableDatabase();
+        //TODO: add textJson according to chapterIndex in database
+        db.close();
+    }
+    public void isDownloaded(ChapterItem chapterItem) {
+        //TODO: is chapterItem downloaded
     }
 }

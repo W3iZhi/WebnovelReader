@@ -112,6 +112,10 @@ public class BookDetails extends AppCompatActivity {
             public boolean onMenuItemClick(@NonNull MenuItem item) {
                 Log.d("Chapters Database", "Downloading Chapter Data");
                 //TODO: Implement thread to scrape chapterData for offline reading
+                for (int i = 0; i < chapterItems.size(); i++) {
+                    ChapterItem chapterItem = chapterItems.get(i);
+                    WebscraperManager.scrapeChaptersDataToDatabase(chapterItem, chaptersDatabase);
+                }
 //                Thread thread = new Thread() {
 //                    @Override
 //                    public void run() {

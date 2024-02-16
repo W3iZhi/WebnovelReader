@@ -7,6 +7,7 @@ import com.example.webnovelreader.BookDetails.ChaptersDatabase;
 import com.example.webnovelreader.BookItem;
 import com.example.webnovelreader.BookReader.ParagraphAdapter;
 import com.example.webnovelreader.BookReader.ParagraphItem;
+import com.google.gson.Gson;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -65,9 +66,6 @@ public class WebscraperManager {
     }
     public static IOException scrapeChapterData(ParagraphItem transitionText, ArrayList<ParagraphItem> paragraphItems, ArrayList<ChapterItem> chapterItems, ChapterItem currentChapter, int selectedChapter) {
         try {
-            if (transitionText.isTransition()) {
-                paragraphItems.add(transitionText);
-            }
             currentChapter = chapterItems.get(selectedChapter);
             String baseUrl = "https://www.royalroad.com";
             String chapterUrl = currentChapter.getChapterUrl();
@@ -217,6 +215,53 @@ public class WebscraperManager {
         }
     }
 
-    public static void scrapeChaptersDataToDatabase(BookItem currenBook, ChaptersDatabase chaptersDatabase) {
+    public static void scrapeChaptersDataToDatabase(ChapterItem chapterItem, ChaptersDatabase chaptersDatabase) {
+        chaptersDatabase.addChapter(chapterItem);
+        try {
+            String baseUrl = "https://www.royalroad.com";
+            String chapterUrl = chapterItem.getChapterUrl();
+            Log.d("chapterUrl", "url: " + chapterUrl);
+            String url = baseUrl + chapterUrl;
+            Document doc = Jsoup.connect(url)
+                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
+                            " AppleWebKit/537.36(KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+                    .header("Accept-Language", "*")
+                    .get();
+            Log.d("scrapping", "connected");
+
+            scrapeRoyalroadChapterDataToDatabase(doc, chaptersDatabase, chapterItem);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void scrapeRoyalroadChapterDataToDatabase(Document doc, ChaptersDatabase chaptersDatabase, ChapterItem chapterItem) {
+        Elements data = doc.select("div.chapter-inner > *");
+        ArrayList<ParagraphItem> paragraphItems = new ArrayList<>();
+        if (data.first().is("div")) {
+            data = data.select("> *");
+        }
+        int size = data.size();
+        Log.d("No. of Paragraphs", Integer.toString(size));
+
+        for (int i = 0; i < size; i ++) {
+            boolean isTable = false;
+            String paragraph = "";
+            Elements tableData = null;
+            Elements currentParagraph = data.eq(i);
+
+            if (currentParagraph.is("div")) {
+                isTable = true;
+                tableData = currentParagraph.select("table > tbody > *");
+            } else {
+                paragraph = currentParagraph.text();
+            }
+            if (isTable) {
+                paragraphItems.add(new ParagraphItem(paragraph, isTable, tableData, false));
+            } else {
+                paragraphItems.add(new ParagraphItem(paragraph, isTable, false));
+            }
+            chaptersDatabase.addChapterData(chapterItem, paragraphItems);
+        }
     }
 }
