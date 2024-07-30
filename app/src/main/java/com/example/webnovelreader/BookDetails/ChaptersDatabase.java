@@ -156,12 +156,16 @@ public class ChaptersDatabase extends SQLiteOpenHelper {
     }
 
     public void addChapterData(ChapterItem chapterItem, ArrayList<ParagraphItem> paragraphItems) {
-        Gson gson = new Gson();
-        String textJson = gson.toJson(paragraphItems, ParagraphItem.class);
-        int chapterIndex = chapterItem.getChapterIndex();
-        SQLiteDatabase db = this.getWritableDatabase();
-        //TODO: add textJson according to chapterIndex in database
-        db.close();
+//        Gson gson = new Gson();
+//        String textJson = gson.toJson(paragraphItems, ParagraphItem.class);
+//        int chapterIndex = chapterItem.getChapterIndex();
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        String tableName = chapterItem.getBookName().replaceAll("\\s", "_").replaceAll("\\p{P}", "_");
+//        //TODO: add textJson according to chapterIndex in database
+//        ContentValues cv = new ContentValues();
+//        cv.put(COL_CHAPTER_DATA, textJson);
+//        db.update(tableName, cv, "_");
+//        db.close();
     }
     public void isDownloaded(ChapterItem chapterItem) {
         //TODO: is chapterItem downloaded
